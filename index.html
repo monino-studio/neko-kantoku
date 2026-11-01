@@ -144,7 +144,9 @@ function dueAt(t){
 }
 function pending(){return activeTasks().filter(t=>!completedToday(t)&&Date.now()>=dueAt(t))}
 function level(){const active=pending();if(!active.length)return 0;const age=Date.now()-Math.min(...active.map(dueAt));return age>=180000?3:age>=120000?2:age>=60000?1:0}
-function updateMood(){const index=preview>=0?preview:Date.now()<celebrateUntil?4:level();const m=moods[index];if($('cat').dataset.mood!==m[0]){$('cat').dataset.mood=m[0]}$('mood').textContent=m[1];$('speech').textContent=m[2];}
+const catImages=['01_normal.png','03_annoyed.png','04_sad.png','06_furious.png','07_happy.png'];
+function changeCatImage(index){const cat=$('cat');const src=catImages[index];if(src&&cat.getAttribute('src')!==src)cat.src=src;}
+function updateMood(){const index=preview>=0?preview:Date.now()<celebrateUntil?4:level();const m=moods[index];changeCatImage(index);if($('cat').dataset.mood!==m[0]){$('cat').dataset.mood=m[0]}$('mood').textContent=m[1];$('speech').textContent=m[2];}
 function render(){
  const list=$('list');list.replaceChildren();const current=activeTasks();$('count').textContent=current.filter(t=>!completedToday(t)).length;
  if(!current.length){const p=document.createElement('p');p.className='empty';p.textContent=tasks.length?'今日の任務は完了にゃ ✨ 繰り返しタスクは次の予定日に戻るよ。':'任務はすべて完了にゃ ✨';list.append(p)}
