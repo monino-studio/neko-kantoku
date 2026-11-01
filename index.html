@@ -142,7 +142,7 @@ function dueAt(t){
  const d=new Date();if(t.deadline){const deadline=new Date(t.deadline);d.setHours(deadline.getHours(),deadline.getMinutes(),0,0)}else d.setHours(0,0,0,0);
  return d.getTime();
 }
-function pending(){return activeTasks().filter(t=>!comple
+function pending(){return activeTasks().filter(t=>!completedToday(t)&&Date.now()>=dueAt(t))}
 function level(){const active=pending();if(!active.length)return 0;const age=Date.now()-Math.min(...active.map(dueAt));return age>=180000?3:age>=120000?2:age>=60000?1:0}
 function updateMood(){const index=preview>=0?preview:Date.now()<celebrateUntil?4:level();const m=moods[index];if($('cat').dataset.mood!==m[0]){$('cat').dataset.mood=m[0]}$('mood').textContent=m[1];$('speech').textContent=m[2];}
 function render(){
