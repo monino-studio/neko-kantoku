@@ -82,7 +82,44 @@ main{max-width:1060px;background:#fff5ed}
 </style><style id="v79">
 .hero-cat #cat{display:block!important;opacity:1!important;visibility:visible!important;object-fit:contain!important;object-position:center bottom!important;mask:none!important;-webkit-mask:none!important;clip-path:none!important;filter:drop-shadow(0 12px 9px #1a092b70)!important}
 .hero-cat{overflow:visible!important}
-</style></head><body><main><section class="palace"><div class="top"><button class="round" id="notice-open" onclick="document.getElementById('settings-dialog').showModal()" aria-label="通知">🔔</button><div class="brand"><div class="device-clock" id="device-clock" aria-label="現在時刻"></div><h1>♛ 猫さま監督官 ♛</h1><small>ねこさま かんとくかん</small></div><button class="round" id="settings-open" aria-label="設定">⚙</button></div><div class="queen"><div class="hero-cat"><img id="cat" src="queen-throne-v79.png" alt="玉座に座る猫さま"></div><div class="hero-side"><div id="speech" class="bubble">今日の任務を申しつけるにゃ。</div></div></div></div><div id="mood" class="mood">👑 優雅にお待ちです</div></section><section class="panel"><div class="tabs"><button class="selected" data-tab="tasks">♛ 今日の任務 <span id="count">0</span></button><button data-tab="done">完了した任務</button><button data-tab="rewards">ご褒美</button></div><div id="tasks-panel"><form id="form" class="form"><input id="task" required maxlength="120" placeholder="やることを入力…"><button type="submit">＋ 追加</button><label>⏰ 締切（任意）<input type="datetime-local" id="deadline"></label></form><div id="list"></div></div><div id="rewards-panel" hidden></div></section><nav class="bottomnav" aria-label="メニュー"><button class="selected" type="button" onclick="window.scrollTo({top:0,behavior:'smooth'})">⌂ ホーム</button><button type="button" onclick="document.getElementById('task').focus()">☑ タスク</button><button type="button" onclick="document.getElementById('cat').scrollIntoView({behavior:'smooth',block:'center'})">♛ 猫さま</button><button type="button" onclick="document.getElementById('settings-dialog').showModal()">⚙ 設定</button></nav><div class="foot">猫さま監督官 Ver.7.9 · 透過素材組み込み版<br>催促通知は画面を開いている間だけ。閉じた状態のプッシュ通知は今後対応予定です。</div></main><dialog id="settings-dialog"><h2>🔔 猫さまの催促設定</h2><div class="notice"><label>通知間隔 <select id="interval"><option value="1">1分（テスト用）</option><option value="5">5分</option><option value="15">15分</option><option value="30">30分</option></select></label><label><input id="quiet" type="checkbox" checked> 夜22時〜朝8時は通知しない</label><button id="enable" type="button">通知を有効にしてテスト送信</button><small id="status" aria-live="polite">タスクを追加すると催促するにゃ。</small><small>締切あり：締切後から催促します。アプリを閉じている間の通知は未対応です。</small></div><p style="text-align:right"><button id="settings-close" type="button">閉じる</button></p></dialog><script>
+</style><style id="v80-speech-bubble">
+/* Symmetrical, smooth speech bubble. Text stays live and accessible. */
+.queen .bubble, .hero-side .bubble, #speech{
+  box-sizing:border-box!important;
+  border:2px solid #d9ab57!important;
+  border-radius:999px!important;
+  background:linear-gradient(135deg,#fffdf9f7,#fff7eef7)!important;
+  box-shadow:0 7px 22px #32132c4d,inset 0 1px 2px #fff!important;
+  color:#63313b!important;
+  text-align:center!important;
+  font-weight:700!important;
+  line-height:1.55!important;
+  padding:24px 32px!important;
+  min-height:132px!important;
+  width:100%!important;
+  max-width:440px!important;
+  min-width:0!important;
+  margin:auto!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  overflow-wrap:anywhere!important;
+  word-break:normal!important;
+  flex:0 1 440px!important;
+}
+@media(max-width:700px){
+ .queen .bubble,.hero-side .bubble,#speech{
+  position:relative!important;
+  inset:auto!important;
+  max-width:min(94%,430px)!important;
+  min-height:88px!important;
+  padding:17px 24px!important;
+  font-size:clamp(14px,3.8vw,19px)!important;
+  flex:initial!important;
+  margin:0 auto!important;
+ }
+}
+</style></head><body><main><section class="palace"><div class="top"><button class="round" id="notice-open" onclick="document.getElementById('settings-dialog').showModal()" aria-label="通知">🔔</button><div class="brand"><div class="device-clock" id="device-clock" aria-label="現在時刻"></div><h1>♛ 猫さま監督官 ♛</h1><small>ねこさま かんとくかん</small></div><button class="round" id="settings-open" aria-label="設定">⚙</button></div><div class="queen"><div class="hero-cat"><img id="cat" src="queen-throne-v79.png" alt="玉座に座る猫さま"></div><div class="hero-side"><div id="speech" class="bubble">今日の任務を申しつけるにゃ。</div></div></div></div><div id="mood" class="mood">👑 優雅にお待ちです</div></section><section class="panel"><div class="tabs"><button class="selected" data-tab="tasks">♛ 今日の任務 <span id="count">0</span></button><button data-tab="done">完了した任務</button><button data-tab="rewards">ご褒美</button></div><div id="tasks-panel"><form id="form" class="form"><input id="task" required maxlength="120" placeholder="やることを入力…"><button type="submit">＋ 追加</button><label>⏰ 締切（任意）<input type="datetime-local" id="deadline"></label></form><div id="list"></div></div><div id="rewards-panel" hidden></div></section><nav class="bottomnav" aria-label="メニュー"><button class="selected" type="button" onclick="window.scrollTo({top:0,behavior:'smooth'})">⌂ ホーム</button><button type="button" onclick="document.getElementById('task').focus()">☑ タスク</button><button type="button" onclick="document.getElementById('cat').scrollIntoView({behavior:'smooth',block:'center'})">♛ 猫さま</button><button type="button" onclick="document.getElementById('settings-dialog').showModal()">⚙ 設定</button></nav><div class="foot">猫さま監督官 Ver.8.0 · 透過素材組み込み版<br>催促通知は画面を開いている間だけ。閉じた状態のプッシュ通知は今後対応予定です。</div></main><dialog id="settings-dialog"><h2>🔔 猫さまの催促設定</h2><div class="notice"><label>通知間隔 <select id="interval"><option value="1">1分（テスト用）</option><option value="5">5分</option><option value="15">15分</option><option value="30">30分</option></select></label><label><input id="quiet" type="checkbox" checked> 夜22時〜朝8時は通知しない</label><button id="enable" type="button">通知を有効にしてテスト送信</button><small id="status" aria-live="polite">タスクを追加すると催促するにゃ。</small><small>締切あり：締切後から催促します。アプリを閉じている間の通知は未対応です。</small></div><p style="text-align:right"><button id="settings-close" type="button">閉じる</button></p></dialog><script>
 'use strict';
 const KEY='nekoQueenV5', OLD='nekoQueenV3';
 let tasks=[];try{const stored=localStorage.getItem(KEY);tasks=JSON.parse(stored!==null?stored:(localStorage.getItem(OLD)||'[]'));if(!Array.isArray(tasks))tasks=[];tasks=tasks.filter(t=>t&&typeof t.text==='string').map(t=>({...t,at:Number(t.at)||Date.now(),deadline:t.deadline||null}));}catch(e){tasks=[]}
