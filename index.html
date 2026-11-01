@@ -136,13 +136,13 @@ function scheduled(t,d=new Date()){
 }
 function completedToday(t){return t.repeat&&t.repeat!=='once'&&t.lastDone===dateKey()}
 function doneToday(){return tasks.filter(t=>t.repeat==='once-done'||(scheduled(t)&&completedToday(t)))}
-function activeTasks(){return tasks.filter(t=>t.repeat!=='once-done'&&scheduled(t)&&!completedToday(t))}
+function activeTasks(){return tasks.filter(t=>t.repeat!=='once-done'&&scheduled(t))}
 function dueAt(t){
  if(!t.repeat||t.repeat==='once')return t.deadline?new Date(t.deadline).getTime():t.at;
  const d=new Date();if(t.deadline){const deadline=new Date(t.deadline);d.setHours(deadline.getHours(),deadline.getMinutes(),0,0)}else d.setHours(0,0,0,0);
  return d.getTime();
 }
-function pending(){return activeTasks().filter(t=>Date.now()>=dueAt(t))}
+function pending(){return activeTasks().filter(t=>!comple
 function level(){const active=pending();if(!active.length)return 0;const age=Date.now()-Math.min(...active.map(dueAt));return age>=180000?3:age>=120000?2:age>=60000?1:0}
 function updateMood(){const index=preview>=0?preview:Date.now()<celebrateUntil?4:level();const m=moods[index];if($('cat').dataset.mood!==m[0]){$('cat').dataset.mood=m[0]}$('mood').textContent=m[1];$('speech').textContent=m[2];}
 function render(){
@@ -152,9 +152,32 @@ function render(){
  const row=document.createElement('div');row.className='task';const info=document.createElement('div');info.className='info';const name=document.createElement('strong');name.textContent=t.text;
  const time=document.createElement('small');const repeats={once:'1回だけ',daily:'毎日',weekdays:'平日のみ',weekly:'毎週 '+['日','月','火','水','木','金','土'][Number(t.weekday)||0]+'曜日'};
  let label='🔁 '+(repeats[t.repeat||'once']||'1回だけ');if(t.deadline){const dt=new Date(dueAt(t));label+=' ・⏰ '+dt.toLocaleString('ja-JP');}else label+=' ・締切なし';time.textContent=label;
- info.append(name,time);const done=document.createElement('button');done.textContent='✓ 完了';done.onclick=()=>{
- if(t.repeat&&t.repeat!=='once'){t.lastDone=dateKey();t.doneHistory=Array.isArray(t.doneHistory)?t.doneHistory:[];if(!t.doneHistory.includes(t.lastDone))t.doneHistory.push(t.lastDone)}else{t.lastDone=dateKey();t.repeat='once-done';}
- save();celebrateUntil=Date.now()+15000;preview=-1;lastNotice=Date.now();render()};
+ info.append(name,time);
+const done=document.createElement('button');
+done.textContent=completedToday(t)?'🌸 本日完了':'✓ 完了';
+done.onclick=()=>{
+  if(completedToday(t)){
+    t.lastDone=null;
+    save();
+    render();
+    return;
+  }
+  if(t.repeat&&t.repeat!=='once'){
+    t.lastDone=dateKey();
+    t.doneHistory=Array.isArray(t.doneHistory)?t.doneHistory:[];
+    if(!t.doneHistory.includes(t.lastDone)){
+      t.doneHistory.push(t.lastDone);
+    }
+  }else{
+    t.lastDone=dateKey();
+    t.repeat='once-done';
+  }
+  save();
+  celebrateUntil=Date.now()+15000;
+  preview=-1;
+  lastNotice=Date.now();
+  render();
+};
  const del=document.createElement('button');del.textContent='削除';del.onclick=()=>{if(t.repeat&&t.repeat!=='once'&&!confirm('この繰り返しタスクを今後も含めて削除する？'))return;tasks=tasks.filter(x=>x.id!==t.id);save();lastNotice=Date.now();render()};
  row.append(info,done,del);list.append(row)
  });updateMood()
