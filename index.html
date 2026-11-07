@@ -211,4 +211,17 @@ function renderDone(){
 }
 const tabs=document.querySelectorAll('[data-tab]');tabs.forEach(b=>b.addEventListener('click',()=>{const name=b.dataset.tab;tabs.forEach(x=>x.classList.toggle('selected',x.dataset.tab===name));document.getElementById('tasks-panel').hidden=name==='done'||name==='rewards';document.getElementById('rewards-panel').hidden=name!=='done'&&name!=='rewards';if(name==='done')renderDone();else if(name==='rewards')document.getElementById('rewards-panel').innerHTML='<h2>🎁 ご褒美</h2><p>よく頑張った下僕には、猫さまが褒めてつかわす♡</p>'}));
 document.getElementById('settings-open').onclick=()=>document.getElementById('settings-dialog').showModal();document.getElementById('settings-close').onclick=()=>document.getElementById('settings-dialog').close();
+</script><script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', async () => {
+    try {
+      const registration =
+        await navigator.serviceWorker.register('./sw.js');
+
+      console.log('猫さまの通知準備OK！', registration);
+    } catch (error) {
+      console.error('通知の準備に失敗しました', error);
+    }
+  });
+}
 </script></body></html>
