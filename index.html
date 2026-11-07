@@ -194,7 +194,104 @@ $('form').onsubmit=e=>{
 $('interval').value=localStorage.getItem('nekoInterval')||'1';$('quiet').checked=localStorage.getItem('nekoQuiet')!=='false';$('interval').onchange=()=>{localStorage.setItem('nekoInterval',$('interval').value);lastNotice=Date.now()};$('quiet').onchange=()=>localStorage.setItem('nekoQuiet',String($('quiet').checked));
 function quietNow(){const h=new Date().getHours();return $('quiet').checked&&(h>=22||h<8)}
 function notifyCat(test=false){if(!('Notification'in window)||Notification.permission!=='granted')return false;if(!test&&(quietNow()||!pending().length))return false;const mood=moods[level()];try{const n=new Notification('👑 猫さま監督官',{body:test?'通知テストにゃ！猫さまはここにいるにゃ♡':mood[2],icon:(test?'normal':mood[0])+'.png',tag:'neko-'+Date.now()+'-'+Math.random()});n.onclick=()=>{window.focus();n.close()};if(!test)autoCount++;return true}catch(e){$('status').textContent='通知エラー：'+e.message;return false}}
-$('enable').onclick=async()=>{if(!('Notification'in window)){$('status').textContent='このブラウザでは通知を使えません';return}let permission=Notification.permission;if(permission==='default')permission=await Notification.requestPermission();if(permission==='granted'){$('status').textContent='通知テストを送信しました';notifyCat(true)}else $('status').textContent='Chromeのサイト設定で通知を許可してね'};
+// VAPID公開鍵を通知登録用の形式に変換
+function urlBase64ToUint8Array(base64String) {
+  const padding = '='.repeat((4 - base64String.length % 4) % 4);
+  const base64 = (base64String + padding)
+    .replace(/-/g, '+')
+    .replace(/_/g, '/');
+
+  const rawData = atob(base64);
+
+  return Uint8Array.from(
+    rawData,
+    character => character.charCodeAt(0)
+  );
+}
+
+// 通知を有効にするボタン
+$('enable').onclick = async () => {
+  const status = $('status');
+
+  try {
+    if (
+      !('Notification' in window) ||
+      !('serviceWorker' in navigator) ||
+      !('PushManager' in window)
+    ) {
+      status.textContent =
+        'この環境ではプッシュ通知を利用できません。iPhoneはホーム画面に追加してから開いてね。';
+      return;
+    }
+
+    // 通知の許可を確認
+    let permission = Notification.permission;
+
+    if (permission === 'default') {
+      permission = await Notification.requestPermission();
+    }
+
+    if (permission !== 'granted') {
+      status.textContent =
+        '通知が許可されていません。端末の通知設定を確認してね。';
+      return;
+    }
+
+    status.textContent = '🐈 通知の準備中だにゃ…';
+
+    // Service Workerを登録
+    const registration =
+      await navigator.serviceWorker.register('./sw.js');
+
+    // Cloudflareから公開鍵を取得
+    const server =
+      'https://neko-kantoku-push.nekosama.workers.dev';
+
+    const keyResponse = await fetch(server + '/public-key');
+
+    if (!keyResponse.ok) {
+      throw new Error('公開鍵を取得できませんでした');
+    }
+
+    const { publicKey } = await keyResponse.json();
+
+    // 通知の受信登録
+    let subscription =
+      await registration.pushManager.getSubscription();
+
+    if (!subscription) {
+      subscription = await registration.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: urlBase64ToUint8Array(publicKey)
+      });
+    }
+
+    // Cloudflareのデータベースに通知先を登録
+    const response = await fetch(server + '/subscribe', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(subscription)
+    });
+
+    if (!response.ok) {
+      throw new Error('通知先の登録に失敗しました');
+    }
+
+    status.textContent =
+      '🐈👑 通知の受信登録が完了したにゃ！';
+
+    // これまでの通知テストも実行
+    notifyCat(true);
+
+  } catch (error) {
+    console.error('プッシュ通知の登録エラー:', error);
+
+    status.textContent =
+      '通知の登録に失敗したにゃ：' + error.message;
+  }
+};
 function tick(){updateMood();const active=pending(),gap=Number($('interval').value)*60000;const key=active.map(t=>t.id).sort().join(',');if(key!==lastNoticeTaskKey){lastNoticeTaskKey=key;lastNotice=Date.now()}if(!activeTasks().length){$('status').textContent='任務完了！自動催促は停止中（送信 '+autoCount+'回）';return}if(!active.length){$('status').textContent='締切待ち：'+activeTasks().length+'件。締切になったら催促を始めるにゃ';return}if(quietNow()){$('status').textContent='おやすみ時間中：自動催促を停止しています';return}const remain=Math.max(0,Math.ceil((gap-(Date.now()-lastNotice))/1000));$('status').textContent='催促対象 '+active.length+'件・次の通知まで約'+remain+'秒・自動送信 '+autoCount+'回';if(Date.now()-lastNotice>=gap){if(Notification.permission==='granted')notifyCat(false);lastNotice=Date.now()}}
 function updateClock(){const el=document.getElementById('device-clock');if(el)el.textContent=new Intl.DateTimeFormat(navigator.language||'ja-JP',{hour:'numeric',minute:'2-digit'}).format(new Date())}
 updateClock();setInterval(updateClock,15000);
