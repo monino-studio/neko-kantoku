@@ -438,7 +438,7 @@ if ('serviceWorker' in navigator) {
     button.disabled = true;
     report('通知登録を確認中…');
     try {
-      if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
+      if (!('serviceWorker' in navigator)) {
         throw new Error('この環境ではWeb Pushが使えません。iPhoneのホーム画面からアプリを開いてね');
       }
       if (!('Notification' in window)) throw new Error('この環境では通知を使えません');
