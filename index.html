@@ -321,4 +321,104 @@ if ('serviceWorker' in navigator) {
     }
   });
 }
-</script></body></html>
+</script><!-- 猫さま監督官：クラウドタスク同期（既存機能は変更しません） -->
+<script>
+(() => {
+  'use strict';
+  const CLOUD_SERVER = 'https://neko-kantoku-push.nekosama.workers.dev';
+  const OWNER_STORAGE_KEY = 'nekoOwnerKeyV1';
+  let timer = null;
+  let syncing = false;
+  let needsSync = false;
+
+  const syncLabel = document.createElement('small');
+  syncLabel.id = 'neko-cloud-sync';
+  syncLabel.style.display = 'block';
+  syncLabel.style.marginTop = '8px';
+  syncLabel.textContent = '☁️ クラウド同期：未確認';
+  document.getElementById('status')?.insertAdjacentElement('afterend', syncLabel);
+  const show = message => { syncLabel.textContent = '☁️ ' + message; };
+
+  function getOwnerKey() {
+    let key = localStorage.getItem(OWNER_STORAGE_KEY);
+    if (key && /^[a-f0-9]{64}$/.test(key)) return key;
+    const bytes = crypto.getRandomValues(new Uint8Array(32));
+    key = Array.from(bytes, b => b.toString(16).padStart(2, '0')).join('');
+    localStorage.setItem(OWNER_STORAGE_KEY, key);
+    return key;
+  }
+
+  async function syncNow() {
+    if (syncing) { needsSync = true; return; }
+    syncing = true;
+    try {
+      if (!('serviceWorker' in navigator)) {
+        show('この端末では利用できません');
+        return;
+      }
+      const registration = await navigator.serviceWorker.getRegistration();
+      const subscription = await registration?.pushManager?.getSubscription();
+      if (!subscription) {
+        show('通知を有効にすると同期できます');
+        return;
+      }
+      // 元のタスクをサーバー上書きで消さないよう、未作成・読込不能時は送らない。
+      if (localStorage.getItem('nekoQueenV5') === null &&
+          localStorage.getItem('nekoQueenV3') === null) {
+        show('タスクを登録すると同期できます');
+        return;
+      }
+      const payload = {
+        ownerKey: getOwnerKey(),
+        subscription: subscription.toJSON(),
+        tasks: tasks.map(t => ({
+          id: t.id,
+          repeat: t.repeat || 'once',
+          dueAt: Number.isFinite(dueAt(t)) ? dueAt(t) : Date.now(),
+          weekday: Number.isInteger(Number(t.weekday)) &&
+            Number(t.weekday) >= 0 && Number(t.weekday) <= 6 ? Number(t.weekday) : 0,
+          lastDone: t.lastDone || null
+        }))
+      };
+      const response = await fetch(CLOUD_SERVER + '/sync-tasks', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      const result = await response.json();
+      if (!response.ok || !result.success) {
+        throw new Error(result.error || `HTTP ${response.status}`);
+      }
+      show(`同期成功（${result.synced}件）`);
+    } catch (error) {
+      console.error('猫さまクラウド同期エラー', error);
+      show('同期失敗：' + error.message);
+    } finally {
+      syncing = false;
+      if (needsSync) { needsSync = false; queueSync(); }
+    }
+  }
+
+  function queueSync() {
+    clearTimeout(timer);
+    timer = setTimeout(syncNow, 900);
+  }
+
+  // 元の保存処理を維持したまま同期を追加する。
+  const originalSave = save;
+  save = function () {
+    originalSave();
+    queueSync();
+  };
+
+  window.addEventListener('load', () => setTimeout(queueSync, 3000));
+  // 通知の有効化が終わった後でも同期できるよう複数回確認する。
+  document.getElementById('enable')?.addEventListener('click', () => {
+    setTimeout(queueSync, 1500);
+    setTimeout(queueSync, 5000);
+  });
+  // 繰り返しタスクの対象日が変わった場合にも同期する。
+  setInterval(queueSync, 10 * 60 * 1000);
+})();
+</script>
+</body></html>
