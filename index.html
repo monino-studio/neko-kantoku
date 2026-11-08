@@ -420,5 +420,61 @@ if ('serviceWorker' in navigator) {
   // 繰り返しタスクの対象日が変わった場合にも同期する。
   setInterval(queueSync, 10 * 60 * 1000);
 })();
+</script><!-- 猫さま監督官：通知登録・クラウド同期の修復ボタン（既存コードの下に追加） -->
+<script>
+(() => {
+  'use strict';
+  const label = document.getElementById('neko-cloud-sync');
+  if (!label || document.getElementById('neko-cloud-repair')) return;
+  const button = document.createElement('button');
+  button.id = 'neko-cloud-repair';
+  button.type = 'button';
+  button.textContent = '🔔 通知を再登録してクラウド同期';
+  button.style.cssText = 'display:block;max-width:100%;margin:10px 0;padding:10px 14px;border-radius:12px;';
+  label.insertAdjacentElement('afterend', button);
+  const report = text => { label.textContent = '☁️ ' + text; };
+  const server = 'https://neko-kantoku-push.nekosama.workers.dev';
+  button.addEventListener('click', async () => {
+    button.disabled = true;
+    report('通知登録を確認中…');
+    try {
+      if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
+        throw new Error('この環境ではWeb Pushが使えません。iPhoneのホーム画面からアプリを開いてね');
+      }
+      if (!('Notification' in window)) throw new Error('この環境では通知を使えません');
+      let permission = Notification.permission;
+      if (permission === 'default') permission = await Notification.requestPermission();
+      if (permission !== 'granted') throw new Error('iPhoneで通知が許可されていません');
+
+      // 今使っているアプリに対応するService Workerを明示的に登録する。
+      const reg = await navigator.serviceWorker.register('./sw.js');
+      if (!reg.pushManager) throw new Error('PushManagerがありません');
+      let sub = await reg.pushManager.getSubscription();
+      if (!sub) {
+        const keyResponse = await fetch(server + '/public-key', {cache:'no-store'});
+        const keyData = await keyResponse.json();
+        if (!keyResponse.ok || !keyData.publicKey) throw new Error('通知用公開鍵を取得できません');
+        const base64 = keyData.publicKey.replace(/-/g,'+').replace(/_/g,'/');
+        const binary = atob(base64 + '='.repeat((4-base64.length%4)%4));
+        const keyBytes = Uint8Array.from(binary, ch => ch.charCodeAt(0));
+        sub = await reg.pushManager.subscribe({userVisibleOnly:true, applicationServerKey:keyBytes});
+      }
+      const registered = await fetch(server + '/subscribe', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body:JSON.stringify(sub.toJSON())
+      });
+      const data = await registered.json();
+      if (!registered.ok || !data.success) throw new Error(data.error || '通知先の保存に失敗しました');
+      report('通知登録完了。タスクを同期中…');
+      if (typeof save !== 'function') throw new Error('タスク保存機能が見つかりません');
+      save(); // 既存の同期追加コードの queueSync を起動。
+    } catch (error) {
+      console.error('クラウド同期の通知登録エラー', error);
+      report('登録失敗：' + error.message);
+    } finally {
+      button.disabled = false;
+    }
+  });
+})();
 </script>
 </body></html>
