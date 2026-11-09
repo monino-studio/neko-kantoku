@@ -145,6 +145,75 @@ main{max-width:1060px;background:#fff5ed}
   min-width: 44px;
   min-height: 44px;
 }
+</style><style id="neko-iphone-readability-v1">
+
+/* iPhone：タイトルと時計を見える位置へ */
+@media (max-width: 700px) {
+
+  .top {
+    padding-top: max(
+      72px,
+      calc(env(safe-area-inset-top) + 18px)
+    ) !important;
+    padding-left: 62px !important;
+    padding-right: 62px !important;
+    padding-bottom: 14px !important;
+  }
+
+  /* タイトルと時計の背景 */
+  .top .brand {
+    min-width: 0;
+    padding: 12px 5px;
+    background: rgba(255, 250, 240, 0.90);
+    border-radius: 18px;
+    box-shadow: 0 4px 18px rgba(30, 25, 50, 0.15);
+    text-shadow: none !important;
+  }
+
+  .top h1 {
+    font-size: clamp(17px, 5vw, 25px) !important;
+    line-height: 1.4 !important;
+    color: #1B3454 !important;
+    white-space: nowrap;
+  }
+
+  .device-clock {
+    font-size: 16px !important;
+    color: #1B3454 !important;
+  }
+
+  .top small {
+    color: #1B3454 !important;
+  }
+}
+
+/* 文字を上品なネイビーに統一 */
+main {
+  color: #1B3454;
+}
+
+#speech,
+.queen .bubble,
+.mood,
+.task strong,
+.task small,
+.form label,
+.empty,
+.foot,
+.expressions,
+.expressions-title,
+.expression-grid button,
+.bottomnav button,
+.tabs button {
+  color: #1B3454 !important;
+}
+
+/* 入力欄も読みやすく */
+.form input,
+.form select {
+  color: #1B3454 !important;
+}
+
 </style></head><body><main><section class="palace"><div class="top"><button class="round" id="notice-open" onclick="document.getElementById('settings-dialog').showModal()" aria-label="通知">🔔</button><div class="brand"><div class="device-clock" id="device-clock" aria-label="現在時刻"></div><h1>♛ 猫さま監督官 ♛</h1><small>ねこさま かんとくかん</small></div><button class="round" id="settings-open" aria-label="設定">⚙</button></div><div class="queen"><div class="hero-cat"><img id="cat" src="01_normal.png" alt="玉座に座る猫さま"></div><div class="hero-side"><div id="speech" class="bubble">今日の任務を申しつけるにゃ。</div></div></div></div><div id="mood" class="mood">👑 優雅にお待ちです</div></section><section class="panel"><div class="tabs"><button class="selected" data-tab="tasks">♛ 今日の任務 <span id="count">0</span></button><button data-tab="done">完了した任務</button><button data-tab="rewards">ご褒美</button></div><div id="tasks-panel"><form id="form" class="form"><input id="task" required maxlength="120" placeholder="やることを入力…"><button type="submit">＋ 追加</button><label>🔁 繰り返し<select id="repeat"><option value="once">1回だけ</option><option value="daily">毎日</option><option value="weekdays">平日のみ（月〜金）</option><option value="weekly">毎週（曜日を指定）</option></select></label><label id="weekday-wrap" hidden>曜日<select id="weekday"><option value="0">日曜日</option><option value="1">月曜日</option><option value="2">火曜日</option><option value="3">水曜日</option><option value="4">木曜日</option><option value="5">金曜日</option><option value="6">土曜日</option></select></label><label>⏰ 締切（任意）<input type="datetime-local" id="deadline"></label></form><div id="list"></div></div><div id="rewards-panel" hidden></div></section><nav class="bottomnav" aria-label="メニュー"><button class="selected" type="button" onclick="window.scrollTo({top:0,behavior:'smooth'})">⌂ ホーム</button><button type="button" onclick="document.getElementById('task').focus()">☑ タスク</button><button type="button" onclick="document.getElementById('cat').scrollIntoView({behavior:'smooth',block:'center'})">♛ 猫さま</button><button type="button" onclick="document.getElementById('settings-dialog').showModal()">⚙ 設定</button></nav><div class="foot">猫さま監督官 Ver.8.3 · 繰り返しタスク対応版<br>催促通知は画面を開いている間だけ。閉じた状態のプッシュ通知は今後対応予定です。</div></main><dialog id="settings-dialog"><h2>🔔 猫さまの催促設定</h2><div class="notice"><label>通知間隔 <select id="interval"><option value="1">1分（テスト用）</option><option value="5">5分</option><option value="15">15分</option><option value="30">30分</option></select></label><label><input id="quiet" type="checkbox" checked> 夜22時〜朝8時は通知しない</label><button id="enable" type="button">通知を有効にしてテスト送信</button><small id="status" aria-live="polite">タスクを追加すると催促するにゃ。</small><small>締切あり：締切後から催促します。アプリを閉じている間の通知は未対応です。</small></div><p style="text-align:right"><button id="settings-close" type="button">閉じる</button></p></dialog><script>
 'use strict';
 const KEY='nekoQueenV5', OLD='nekoQueenV3';
