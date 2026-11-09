@@ -214,7 +214,10 @@ main {
   color: #1B3454 !important;
 }
 
-</style></head><body><main><section class="palace"><div class="top"><button class="round" id="notice-open" onclick="document.getElementById('settings-dialog').showModal()" aria-label="通知">🔔</button><div class="brand"><div class="device-clock" id="device-clock" aria-label="現在時刻"></div><h1>♛ 猫さま監督官 ♛</h1><small>ねこさま かんとくかん</small></div><button class="round" id="settings-open" aria-label="設定">⚙</button></div><div class="queen"><div class="hero-cat"><img id="cat" src="01_normal.png" alt="玉座に座る猫さま"></div><div class="hero-side"><div id="speech" class="bubble">今日の任務を申しつけるにゃ。</div></div></div></div><div id="mood" class="mood">👑 優雅にお待ちです</div></section><section class="panel"><div class="tabs"><button class="selected" data-tab="tasks">♛ 今日の任務 <span id="count">0</span></button><button data-tab="done">完了した任務</button><button data-tab="rewards">ご褒美</button></div><div id="tasks-panel"><form id="form" class="form"><input id="task" required maxlength="120" placeholder="やることを入力…"><button type="submit">＋ 追加</button><label>🔁 繰り返し<select id="repeat"><option value="once">1回だけ</option><option value="daily">毎日</option><option value="weekdays">平日のみ（月〜金）</option><option value="weekly">毎週（曜日を指定）</option></select></label><label id="weekday-wrap" hidden>曜日<select id="weekday"><option value="0">日曜日</option><option value="1">月曜日</option><option value="2">火曜日</option><option value="3">水曜日</option><option value="4">木曜日</option><option value="5">金曜日</option><option value="6">土曜日</option></select></label><label>⏰ 締切（任意）<input type="datetime-local" id="deadline"></label></form><div id="list"></div></div><div id="rewards-panel" hidden></div></section><nav class="bottomnav" aria-label="メニュー"><button class="selected" type="button" onclick="window.scrollTo({top:0,behavior:'smooth'})">⌂ ホーム</button><button type="button" onclick="document.getElementById('task').focus()">☑ タスク</button><button type="button" onclick="document.getElementById('cat').scrollIntoView({behavior:'smooth',block:'center'})">♛ 猫さま</button><button type="button" onclick="document.getElementById('settings-dialog').showModal()">⚙ 設定</button></nav><div class="foot">猫さま監督官 Ver.8.3 · 繰り返しタスク対応版<br>催促通知は画面を開いている間だけ。閉じた状態のプッシュ通知は今後対応予定です。</div></main><dialog id="settings-dialog"><h2>🔔 猫さまの催促設定</h2><div class="notice"><label>通知間隔 <select id="interval"><option value="1">1分（テスト用）</option><option value="5">5分</option><option value="15">15分</option><option value="30">30分</option></select></label><label><input id="quiet" type="checkbox" checked> 夜22時〜朝8時は通知しない</label><button id="enable" type="button">通知を有効にしてテスト送信</button><small id="status" aria-live="polite">タスクを追加すると催促するにゃ。</small><small>締切あり：締切後から催促します。アプリを閉じている間の通知は未対応です。</small></div><p style="text-align:right"><button id="settings-close" type="button">閉じる</button></p></dialog><script>
+/* Ver.9.0：繰り返しは時刻だけ指定。既存のiPhone用レイアウトは維持 */
+#neko-time-wrap[hidden], #neko-deadline-wrap[hidden]{display:none!important}
+#recurring-time{width:100%;max-width:260px;min-height:46px;border:1px solid #d7b777;border-radius:14px;padding:10px;background:#fff;color:#1B3454}
+</style></head><body><main><section class="palace"><div class="top"><button class="round" id="notice-open" onclick="document.getElementById('settings-dialog').showModal()" aria-label="通知">🔔</button><div class="brand"><div class="device-clock" id="device-clock" aria-label="現在時刻"></div><h1>♛ 猫さま監督官 ♛</h1><small>ねこさま かんとくかん</small></div><button class="round" id="settings-open" aria-label="設定">⚙</button></div><div class="queen"><div class="hero-cat"><img id="cat" src="01_normal.png" alt="玉座に座る猫さま"></div><div class="hero-side"><div id="speech" class="bubble">今日の任務を申しつけるにゃ。</div></div></div></div><div id="mood" class="mood">👑 優雅にお待ちです</div></section><section class="panel"><div class="tabs"><button class="selected" data-tab="tasks">♛ 今日の任務 <span id="count">0</span></button><button data-tab="done">完了した任務</button><button data-tab="rewards">ご褒美</button></div><div id="tasks-panel"><form id="form" class="form"><input id="task" required maxlength="120" placeholder="やることを入力…"><button type="submit">＋ 追加</button><label>🔁 繰り返し<select id="repeat"><option value="once">1回だけ</option><option value="daily">毎日</option><option value="weekdays">平日のみ（月〜金）</option><option value="weekly">毎週（曜日を指定）</option></select></label><label id="weekday-wrap" hidden>曜日<select id="weekday"><option value="0">日曜日</option><option value="1">月曜日</option><option value="2">火曜日</option><option value="3">水曜日</option><option value="4">木曜日</option><option value="5">金曜日</option><option value="6">土曜日</option></select></label><label id="neko-deadline-wrap">📅 日付・時刻（1回だけ／任意）<input type="datetime-local" id="deadline"></label><label id="neko-time-wrap" hidden>⏰ 催促開始時刻（繰り返し）<input type="time" id="recurring-time" value="21:00" step="60"></label></form><div id="list"></div></div><div id="rewards-panel" hidden></div></section><nav class="bottomnav" aria-label="メニュー"><button class="selected" type="button" onclick="window.scrollTo({top:0,behavior:'smooth'})">⌂ ホーム</button><button type="button" onclick="document.getElementById('task').focus()">☑ タスク</button><button type="button" onclick="document.getElementById('cat').scrollIntoView({behavior:'smooth',block:'center'})">♛ 猫さま</button><button type="button" onclick="document.getElementById('settings-dialog').showModal()">⚙ 設定</button></nav><div class="foot">猫さま監督官 Ver.9.0 · 時刻指定の習慣化サポート版<br>繰り返し任務は決めた時刻から催促。クラウド通知は約5分間隔・日本時間22時〜8時は停止します。</div></main><dialog id="settings-dialog"><h2>🔔 猫さまの催促設定</h2><div class="notice"><label>通知間隔 <select id="interval"><option value="1">1分（テスト用）</option><option value="5">5分</option><option value="15">15分</option><option value="30">30分</option></select></label><label><input id="quiet" type="checkbox" checked> 夜22時〜朝8時は通知しない</label><button id="enable" type="button">通知を有効にしてテスト送信</button><small id="status" aria-live="polite">タスクを追加すると催促するにゃ。</small><small>指定時刻から催促します。クラウド通知の間隔は約5分（設定画面の通知間隔はアプリ起動中の催促用）。</small></div><p style="text-align:right"><button id="settings-close" type="button">閉じる</button></p></dialog><script>
 'use strict';
 const KEY='nekoQueenV5', OLD='nekoQueenV3';
 let tasks=[];try{const stored=localStorage.getItem(KEY);tasks=JSON.parse(stored!==null?stored:(localStorage.getItem(OLD)||'[]'));if(!Array.isArray(tasks))tasks=[];tasks=tasks.filter(t=>t&&typeof t.text==='string').map(t=>({...t,at:Number(t.at)||Date.now(),deadline:t.deadline||null}));}catch(e){tasks=[]}
@@ -248,7 +251,11 @@ function render(){
  current.forEach(t=>{
  const row=document.createElement('div');row.className='task';const info=document.createElement('div');info.className='info';const name=document.createElement('strong');name.textContent=t.text;
  const time=document.createElement('small');const repeats={once:'1回だけ',daily:'毎日',weekdays:'平日のみ',weekly:'毎週 '+['日','月','火','水','木','金','土'][Number(t.weekday)||0]+'曜日'};
- let label='🔁 '+(repeats[t.repeat||'once']||'1回だけ');if(t.deadline){const dt=new Date(dueAt(t));label+=' ・⏰ '+dt.toLocaleString('ja-JP');}else label+=' ・締切なし';time.textContent=label;
+ let label='🔁 '+(repeats[t.repeat||'once']||'1回だけ');if(t.deadline){
+   const dt=new Date(dueAt(t));
+   const hm=dt.toLocaleTimeString('ja-JP',{hour:'2-digit',minute:'2-digit'});
+   label+=(t.repeat!=='once'&&t.repeat!=='once-done'?' ・⏰ 毎回 '+hm:' ・⏰ '+dt.toLocaleString('ja-JP'));
+ }else label+=' ・締切なし';time.textContent=label;
  info.append(name,time);
 const done=document.createElement('button');
 done.textContent=completedToday(t)?'🌸 本日完了':'✓ 完了';
@@ -276,15 +283,52 @@ done.onclick=()=>{
   render();
 };
  const del=document.createElement('button');del.textContent='削除';del.onclick=()=>{if(t.repeat&&t.repeat!=='once'&&!confirm('この繰り返しタスクを今後も含めて削除する？'))return;tasks=tasks.filter(x=>x.id!==t.id);save();lastNotice=Date.now();render()};
- row.append(info,done,del);list.append(row)
+ row.append(info,done);
+ if(t.repeat!=='once'&&t.repeat!=='once-done'){
+   const change=document.createElement('button');change.type='button';change.textContent='⏰ 時刻変更';
+   change.onclick=()=>{
+     const dt=t.deadline?new Date(t.deadline):null;
+     const oldTime=dt&&!Number.isNaN(dt.getTime())
+       ?[String(dt.getHours()).padStart(2,'0'),String(dt.getMinutes()).padStart(2,'0')].join(':'):'21:00';
+     const value=prompt('毎回の催促開始時刻（例：21:00）',oldTime);
+     if(value===null)return;
+     if(!/^(?:[01]\d|2[0-3]):[0-5]\d$/.test(value)){
+       alert('時刻は21:00のように入力してね');return;
+     }
+     t.deadline=dateKey()+'T'+value;
+     save();lastNotice=Date.now();render();
+   };
+   row.append(change);
+ }
+ row.append(del);list.append(row)
  });updateMood()
 }
-$('repeat').onchange=()=>{$('weekday-wrap').hidden=$('repeat').value!=='weekly'};
+function refreshRepeatFields(){
+ const recurring=$('repeat').value!=='once';
+ $('weekday-wrap').hidden=$('repeat').value!=='weekly';
+ $('neko-deadline-wrap').hidden=recurring;
+ $('neko-time-wrap').hidden=!recurring;
+}
+$('repeat').addEventListener('change',refreshRepeatFields);
+refreshRepeatFields();
 $('weekday').value=String(new Date().getDay());
 $('form').onsubmit=e=>{
- e.preventDefault();const text=$('task').value.trim(),deadline=$('deadline').value,repeat=$('repeat').value;if(!text)return;
- const stamp=deadline?new Date(deadline).getTime():null;if(deadline&&!Number.isFinite(stamp)){alert('締切を確認してね');return}
- tasks.push({id:Date.now()+Math.random(),text,at:Date.now(),deadline:deadline||null,repeat,weekday:Number($('weekday').value),lastDone:null});save();$('task').value='';$('deadline').value='';celebrateUntil=0;preview=-1;lastNotice=Date.now();render()
+ e.preventDefault();
+ const text=$('task').value.trim(), repeat=$('repeat').value;
+ if(!text)return;
+ let deadline=$('deadline').value;
+ if(repeat!=='once'){
+   const time=$('recurring-time').value;
+   if(!/^(?:[01]\d|2[0-3]):[0-5]\d$/.test(time)){
+     alert('催促開始時刻を確認してね');return;
+   }
+   // ブラウザには従来と同じdeadline形式で保存。サーバーへは各日の時刻を同期する。
+   deadline=dateKey()+'T'+time;
+ }
+ const stamp=deadline?new Date(deadline).getTime():null;
+ if(deadline&&!Number.isFinite(stamp)){alert('日付・時刻を確認してね');return;}
+ tasks.push({id:Date.now()+Math.random(),text,at:Date.now(),deadline:deadline||null,repeat,weekday:Number($('weekday').value),lastDone:null});
+ save();$('task').value='';$('deadline').value='';celebrateUntil=0;preview=-1;lastNotice=Date.now();render();
 };
 $('interval').value=localStorage.getItem('nekoInterval')||'1';$('quiet').checked=localStorage.getItem('nekoQuiet')!=='false';$('interval').onchange=()=>{localStorage.setItem('nekoInterval',$('interval').value);lastNotice=Date.now()};$('quiet').onchange=()=>localStorage.setItem('nekoQuiet',String($('quiet').checked));
 function quietNow(){const h=new Date().getHours();return $('quiet').checked&&(h>=22||h<8)}
@@ -390,7 +434,7 @@ $('enable').onclick = async () => {
 function tick(){updateMood();const active=pending(),gap=Number($('interval').value)*60000;const key=active.map(t=>t.id).sort().join(',');if(key!==lastNoticeTaskKey){lastNoticeTaskKey=key;lastNotice=Date.now()}if(!activeTasks().length){$('status').textContent='任務完了！自動催促は停止中（送信 '+autoCount+'回）';return}if(!active.length){$('status').textContent='締切待ち：'+activeTasks().length+'件。締切になったら催促を始めるにゃ';return}if(quietNow()){$('status').textContent='おやすみ時間中：自動催促を停止しています';return}const remain=Math.max(0,Math.ceil((gap-(Date.now()-lastNotice))/1000));$('status').textContent='催促対象 '+active.length+'件・次の通知まで約'+remain+'秒・自動送信 '+autoCount+'回';if(Date.now()-lastNotice>=gap){if(Notification.permission==='granted')notifyCat(false);lastNotice=Date.now()}}
 function updateClock(){const el=document.getElementById('device-clock');if(el)el.textContent=new Intl.DateTimeFormat(navigator.language||'ja-JP',{hour:'numeric',minute:'2-digit'}).format(new Date())}
 updateClock();setInterval(updateClock,15000);
-let currentDay=dateKey();render();tick();setInterval(()=>{if(dateKey()!==currentDay){currentDay=dateKey();render();lastNotice=Date.now()}tick()},1000);if('serviceWorker' in navigator){navigator.serviceWorker.getRegistrations().then(rs=>rs.forEach(r=>r.unregister())).catch(()=>{})}
+let currentDay=dateKey();render();tick();setInterval(()=>{if(dateKey()!==currentDay){currentDay=dateKey();render();lastNotice=Date.now()}tick()},1000);// Web Push登録を維持するためService Workerは解除しない。
 
 function renderDone(){
  const panel=document.getElementById('rewards-panel');panel.replaceChildren();
