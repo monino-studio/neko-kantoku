@@ -217,12 +217,14 @@ main {
 /* Ver.9.0：繰り返しは時刻だけ指定。既存のiPhone用レイアウトは維持 */
 #neko-time-wrap[hidden], #neko-deadline-wrap[hidden]{display:none!important}
 #recurring-time{width:100%;max-width:260px;min-height:46px;border:1px solid #d7b777;border-radius:14px;padding:10px;background:#fff;color:#1B3454}
-</style></head><body><main><section class="palace"><div class="top"><button class="round" id="notice-open" onclick="document.getElementById('settings-dialog').showModal()" aria-label="通知">🔔</button><div class="brand"><div class="device-clock" id="device-clock" aria-label="現在時刻"></div><h1>♛ 猫さま監督官 ♛</h1><small>ねこさま かんとくかん</small></div><button class="round" id="settings-open" aria-label="設定">⚙</button></div><div class="queen"><div class="hero-cat"><img id="cat" src="01_normal.png" alt="玉座に座る猫さま"></div><div class="hero-side"><div id="speech" class="bubble">今日の任務を申しつけるにゃ。</div></div></div></div><div id="mood" class="mood">👑 優雅にお待ちです</div></section><section class="panel"><div class="tabs"><button class="selected" data-tab="tasks">♛ 今日の任務 <span id="count">0</span></button><button data-tab="done">完了した任務</button><button data-tab="rewards">ご褒美</button></div><div id="tasks-panel"><form id="form" class="form"><input id="task" required maxlength="120" placeholder="やることを入力…"><button type="submit">＋ 追加</button><label>🔁 繰り返し<select id="repeat"><option value="once">1回だけ</option><option value="daily">毎日</option><option value="weekdays">平日のみ（月〜金）</option><option value="weekly">毎週（曜日を指定）</option></select></label><label id="weekday-wrap" hidden>曜日<select id="weekday"><option value="0">日曜日</option><option value="1">月曜日</option><option value="2">火曜日</option><option value="3">水曜日</option><option value="4">木曜日</option><option value="5">金曜日</option><option value="6">土曜日</option></select></label><label id="neko-deadline-wrap">📅 日付・時刻（1回だけ／任意）<input type="datetime-local" id="deadline"></label><label id="neko-time-wrap" hidden>⏰ 催促開始時刻（繰り返し）<input type="time" id="recurring-time" value="21:00" step="60"></label></form><div id="list"></div></div><div id="rewards-panel" hidden></div></section><nav class="bottomnav" aria-label="メニュー"><button class="selected" type="button" onclick="window.scrollTo({top:0,behavior:'smooth'})">⌂ ホーム</button><button type="button" onclick="document.getElementById('task').focus()">☑ タスク</button><button type="button" onclick="document.getElementById('cat').scrollIntoView({behavior:'smooth',block:'center'})">♛ 猫さま</button><button type="button" onclick="document.getElementById('settings-dialog').showModal()">⚙ 設定</button></nav><div class="foot">猫さま監督官 Ver.9.0 · 時刻指定の習慣化サポート版<br>繰り返し任務は決めた時刻から催促。クラウド通知は約5分間隔・日本時間22時〜8時は停止します。</div></main><dialog id="settings-dialog"><h2>🔔 猫さまの催促設定</h2><div class="notice"><label>通知間隔 <select id="interval"><option value="1">1分（テスト用）</option><option value="5">5分</option><option value="15">15分</option><option value="30">30分</option></select></label><label><input id="quiet" type="checkbox" checked> 夜22時〜朝8時は通知しない</label><button id="enable" type="button">通知を有効にしてテスト送信</button><small id="status" aria-live="polite">タスクを追加すると催促するにゃ。</small><small>指定時刻から催促します。クラウド通知の間隔は約5分（設定画面の通知間隔はアプリ起動中の催促用）。</small></div><p style="text-align:right"><button id="settings-close" type="button">閉じる</button></p></dialog><script>
+#neko-nickname{width:100%;min-height:44px;border:1px solid #d7b777;border-radius:12px;padding:9px;background:#fff;color:#1B3454}
+.neko-streak{display:block;margin-top:5px;color:#79466a;font-size:13px;font-weight:700}
+</style></head><body><main><section class="palace"><div class="top"><button class="round" id="notice-open" onclick="document.getElementById('settings-dialog').showModal()" aria-label="通知">🔔</button><div class="brand"><div class="device-clock" id="device-clock" aria-label="現在時刻"></div><h1>♛ 猫さま監督官 ♛</h1><small>ねこさま かんとくかん</small></div><button class="round" id="settings-open" aria-label="設定">⚙</button></div><div class="queen"><div class="hero-cat"><img id="cat" src="01_normal.png" alt="玉座に座る猫さま"></div><div class="hero-side"><div id="speech" class="bubble">今日の任務を申しつけるにゃ。</div></div></div></div><div id="mood" class="mood">👑 優雅にお待ちです</div></section><section class="panel"><div class="tabs"><button class="selected" data-tab="tasks">♛ 今日の任務 <span id="count">0</span></button><button data-tab="done">完了した任務</button><button data-tab="rewards">ご褒美</button></div><div id="tasks-panel"><form id="form" class="form"><input id="task" required maxlength="120" placeholder="やることを入力…"><button type="submit">＋ 追加</button><label>🔁 繰り返し<select id="repeat"><option value="once">1回だけ</option><option value="daily">毎日</option><option value="weekdays">平日のみ（月〜金）</option><option value="weekly">毎週（曜日を指定）</option></select></label><label id="weekday-wrap" hidden>曜日<select id="weekday"><option value="0">日曜日</option><option value="1">月曜日</option><option value="2">火曜日</option><option value="3">水曜日</option><option value="4">木曜日</option><option value="5">金曜日</option><option value="6">土曜日</option></select></label><label id="neko-deadline-wrap">📅 日付・時刻（1回だけ／任意）<input type="datetime-local" id="deadline"></label><label id="neko-time-wrap" hidden>⏰ 催促開始時刻（繰り返し）<input type="time" id="recurring-time" value="21:00" step="60"></label></form><div id="list"></div></div><div id="rewards-panel" hidden></div></section><nav class="bottomnav" aria-label="メニュー"><button class="selected" type="button" onclick="window.scrollTo({top:0,behavior:'smooth'})">⌂ ホーム</button><button type="button" onclick="document.getElementById('task').focus()">☑ タスク</button><button type="button" onclick="document.getElementById('cat').scrollIntoView({behavior:'smooth',block:'center'})">♛ 猫さま</button><button type="button" onclick="document.getElementById('settings-dialog').showModal()">⚙ 設定</button></nav><div class="foot">猫さま監督官 Ver.9.1 · 習慣化と連続達成の記録<br>繰り返し任務は決めた時刻から催促。クラウド通知は約5分間隔・日本時間22時〜8時は停止します。</div></main><dialog id="settings-dialog"><h2>🔔 猫さまの催促設定</h2><div class="notice"><label>通知間隔 <select id="interval"><option value="1">1分（テスト用）</option><option value="5">5分</option><option value="15">15分</option><option value="30">30分</option></select></label><label><input id="quiet" type="checkbox" checked> 夜22時〜朝8時は通知しない</label><label>🎀 猫さまに呼ばれたい名前（任意）<input id="neko-nickname" maxlength="16" placeholder="例：みゆ（未入力なら下僕）" autocomplete="off"></label><button id="enable" type="button">通知を有効にしてテスト送信</button><small id="status" aria-live="polite">タスクを追加すると催促するにゃ。</small><small>指定時刻から催促します。クラウド通知の間隔は約5分（設定画面の通知間隔はアプリ起動中の催促用）。</small></div><p style="text-align:right"><button id="settings-close" type="button">閉じる</button></p></dialog><script>
 'use strict';
 const KEY='nekoQueenV5', OLD='nekoQueenV3';
 let tasks=[];try{const stored=localStorage.getItem(KEY);tasks=JSON.parse(stored!==null?stored:(localStorage.getItem(OLD)||'[]'));if(!Array.isArray(tasks))tasks=[];tasks=tasks.filter(t=>t&&typeof t.text==='string').map(t=>({...t,at:Number(t.at)||Date.now(),deadline:t.deadline||null}));}catch(e){tasks=[]}
-const moods=[['normal','👑 猫さまは優雅にお待ちです','今日の任務を申しつけるにゃ。'],['annoyed','😒 猫さまはご不満です','……まだ終わってないのかにゃ？'],['sad','🥺 猫さまは悲しんでいます','猫さまを待たせるなんて……ひどいにゃ……'],['angry','💢 猫さまは激怒しています','下僕！！いつまで待たせるにゃ！！'],['happy','💖 猫さまはご機嫌です','よくやったにゃ♡ 褒めてつかわす！']];
-const $=id=>document.getElementById(id);let celebrateUntil=0,preview=-1,autoCount=0,lastNotice=Date.now(),lastNoticeTaskKey='';
+const moods=[['normal','👑 猫さまは優雅にお待ちです','今日の任務を申しつけるにゃ。'],['annoyed','😒 猫さまはご不満です','習慣化して理想の自分になるためじゃないのかにゃ？'],['sad','🥺 猫さまはお待ちです','さっさと片付けたほうが楽だにゃ？'],['angry','💢 猫さまは激怒しています','怠けてきたから今みたいないまいちな現実を迎えているんじゃないのかにゃ？'],['happy','💖 猫さまはご機嫌です','よくやったにゃ♡ 褒めてつかわす！']];
+const $=id=>document.getElementById(id);let celebrateUntil=0,celebrateMessage='',preview=-1,autoCount=0,lastNotice=Date.now(),lastNoticeTaskKey='';
 function save(){localStorage.setItem(KEY,JSON.stringify(tasks))}
 function dateKey(d=new Date()){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
 function scheduled(t,d=new Date()){
@@ -234,6 +236,50 @@ function scheduled(t,d=new Date()){
 }
 function completedToday(t){return t.repeat&&t.repeat!=='once'&&t.lastDone===dateKey()}
 function doneToday(){return tasks.filter(t=>t.repeat==='once-done'||(scheduled(t)&&completedToday(t)))}
+// 達成履歴は端末内に保存。旧版の lastDone も1回分として数える。
+function completedDates(t){
+ const history=Array.isArray(t.doneHistory)?t.doneHistory:[];
+ const all=[...history,t.lastDone].filter(x=>typeof x==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(x));
+ return [...new Set(all)].sort();
+}
+function isRepeatDay(t,d){
+ const repeat=t.repeat;
+ return repeat==='daily'||(repeat==='weekdays'&&d.getDay()>=1&&d.getDay()<=5)||
+        (repeat==='weekly'&&d.getDay()===Number(t.weekday));
+}
+function getTaskStreak(t){
+ if(!['daily','weekdays','weekly'].includes(t.repeat))return 0;
+ const done=new Set(completedDates(t));
+ const today=new Date();today.setHours(12,0,0,0);
+ const first=new Date(Number(t.at)||Date.now());first.setHours(0,0,0,0);
+ let count=0;
+ // 今日がまだ未達成でも、前回までの連続記録は日付が変わるまで保持。
+ let skippedCurrent=false;
+ for(let d=new Date(today),i=0;i<36600&&d>=first;i++,d.setDate(d.getDate()-1)){
+   if(!isRepeatDay(t,d))continue;
+   const day=dateKey(d);
+   if(!skippedCurrent&&day===dateKey(today)&&!done.has(day)){
+     skippedCurrent=true;continue;
+   }
+   if(done.has(day))count++;
+   else break;
+ }
+ return count;
+}
+function getTotalCompletions(t){return completedDates(t).length;}
+function praiseFor(t){
+ const raw=($('neko-nickname')?.value||'').trim();
+ const nickname=(raw||'下僕').replace(/ちゃん$/,'').slice(0,16)+'ちゃん';
+ const choices=[
+  'これで理想に一歩近づいたにゃ、褒めてつかわす！',
+  '継続はちからなり！エクセレント！',
+  `マーベラス！${nickname}、大好きだにゃ♡`
+ ];
+ const chosen=choices[Math.floor(Math.random()*choices.length)];
+ if(!['daily','weekdays','weekly'].includes(t.repeat))return chosen;
+ const streak=getTaskStreak(t);
+ return `🏆 ${streak}回連続達成！ ${chosen}`;
+}
 function activeTasks(){return tasks.filter(t=>t.repeat!=='once-done'&&scheduled(t))}
 function dueAt(t){
  if(!t.repeat||t.repeat==='once')return t.deadline?new Date(t.deadline).getTime():t.at;
@@ -244,7 +290,7 @@ function pending(){return activeTasks().filter(t=>!completedToday(t)&&Date.now()
 function level(){const active=pending();if(!active.length)return 0;const age=Date.now()-Math.min(...active.map(dueAt));return age>=180000?3:age>=120000?2:age>=60000?1:0}
 const catImages=['01_normal.png','03_annoyed.png','04_sad.png','06_furious.png','07_happy.png'];
 function changeCatImage(index){const cat=$('cat');const src=catImages[index];if(src&&cat.getAttribute('src')!==src)cat.src=src;}
-function updateMood(){const index=preview>=0?preview:Date.now()<celebrateUntil?4:level();const m=moods[index];changeCatImage(index);if($('cat').dataset.mood!==m[0]){$('cat').dataset.mood=m[0]}$('mood').textContent=m[1];$('speech').textContent=m[2];}
+function updateMood(){const index=preview>=0?preview:Date.now()<celebrateUntil?4:level();const m=moods[index];changeCatImage(index);if($('cat').dataset.mood!==m[0]){$('cat').dataset.mood=m[0]}$('mood').textContent=m[1];$('speech').textContent=index===4&&Date.now()<celebrateUntil&&celebrateMessage?celebrateMessage:m[2];}
 function render(){
  const list=$('list');list.replaceChildren();const current=activeTasks();$('count').textContent=current.filter(t=>!completedToday(t)).length;
  if(!current.length){const p=document.createElement('p');p.className='empty';p.textContent=tasks.length?'今日の任務は完了にゃ ✨ 繰り返しタスクは次の予定日に戻るよ。':'任務はすべて完了にゃ ✨';list.append(p)}
@@ -257,10 +303,17 @@ function render(){
    label+=(t.repeat!=='once'&&t.repeat!=='once-done'?' ・⏰ 毎回 '+hm:' ・⏰ '+dt.toLocaleString('ja-JP'));
  }else label+=' ・締切なし';time.textContent=label;
  info.append(name,time);
+ if(['daily','weekdays','weekly'].includes(t.repeat)){
+   const badge=document.createElement('span');badge.className='neko-streak';
+   badge.textContent='🏆 連続 '+getTaskStreak(t)+'回 ／ 累計 '+getTotalCompletions(t)+'回達成';
+   info.append(badge);
+ }
 const done=document.createElement('button');
 done.textContent=completedToday(t)?'🌸 本日完了':'✓ 完了';
 done.onclick=()=>{
   if(completedToday(t)){
+    // 完了取り消し時は達成履歴からも本日分を除く。
+    t.doneHistory=completedDates(t).filter(day=>day!==dateKey());
     t.lastDone=null;
     save();
     render();
@@ -276,6 +329,7 @@ done.onclick=()=>{
     t.lastDone=dateKey();
     t.repeat='once-done';
   }
+  celebrateMessage=praiseFor(t);
   save();
   celebrateUntil=Date.now()+15000;
   preview=-1;
@@ -330,6 +384,8 @@ $('form').onsubmit=e=>{
  tasks.push({id:Date.now()+Math.random(),text,at:Date.now(),deadline:deadline||null,repeat,weekday:Number($('weekday').value),lastDone:null});
  save();$('task').value='';$('deadline').value='';celebrateUntil=0;preview=-1;lastNotice=Date.now();render();
 };
+$('neko-nickname').value=localStorage.getItem('nekoNickname')||'';
+$('neko-nickname').addEventListener('change',()=>localStorage.setItem('nekoNickname',$('neko-nickname').value.trim().slice(0,16)));
 $('interval').value=localStorage.getItem('nekoInterval')||'1';$('quiet').checked=localStorage.getItem('nekoQuiet')!=='false';$('interval').onchange=()=>{localStorage.setItem('nekoInterval',$('interval').value);lastNotice=Date.now()};$('quiet').onchange=()=>localStorage.setItem('nekoQuiet',String($('quiet').checked));
 function quietNow(){const h=new Date().getHours();return $('quiet').checked&&(h>=22||h<8)}
 function notifyCat(test=false){if(!('Notification'in window)||Notification.permission!=='granted')return false;if(!test&&(quietNow()||!pending().length))return false;const mood=moods[level()];try{const n=new Notification('👑 猫さま監督官',{body:test?'通知テストにゃ！猫さまはここにいるにゃ♡':mood[2],icon:(test?'normal':mood[0])+'.png',tag:'neko-'+Date.now()+'-'+Math.random()});n.onclick=()=>{window.focus();n.close()};if(!test)autoCount++;return true}catch(e){$('status').textContent='通知エラー：'+e.message;return false}}
@@ -441,7 +497,10 @@ function renderDone(){
  const heading=document.createElement('h2');heading.textContent='👑 完了した任務';panel.append(heading);
  const done=doneToday();if(!done.length){const p=document.createElement('p');p.textContent='まだ完了した任務はないにゃ。';panel.append(p);return}
  done.forEach(t=>{const row=document.createElement('div');row.className='task';const info=document.createElement('div');info.className='info';const name=document.createElement('strong');name.textContent='✓ '+t.text;const small=document.createElement('small');small.textContent=t.repeat==='once-done'?'1回だけ・完了済み':'🔁 継続中・本日完了（次の予定日に復活）';info.append(name,small);row.append(info);
- if(t.repeat!=='once-done'){const undo=document.createElement('button');undo.textContent='今日の完了を取り消す';undo.onclick=()=>{t.lastDone=null;save();render();renderDone()};row.append(undo)}
+ if(['daily','weekdays','weekly'].includes(t.repeat)){
+    small.textContent+=' ／ 🏆 連続 '+getTaskStreak(t)+'回 ／ 累計 '+getTotalCompletions(t)+'回';
+  }
+  if(t.repeat!=='once-done'){const undo=document.createElement('button');undo.textContent='今日の完了を取り消す';undo.onclick=()=>{t.doneHistory=completedDates(t).filter(day=>day!==dateKey());t.lastDone=null;save();render();renderDone()};row.append(undo)}
  const del=document.createElement('button');del.textContent=t.repeat==='once-done'?'履歴を削除':'継続を終了';del.onclick=()=>{if(!confirm(t.repeat==='once-done'?'完了履歴を削除する？':'この繰り返し設定を完全に削除する？'))return;tasks=tasks.filter(x=>x.id!==t.id);save();render();renderDone()};row.append(del);panel.append(row)
  });
 }
