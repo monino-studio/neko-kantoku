@@ -89,8 +89,8 @@ self.addEventListener('push', event => {
 
   const options = {
     body: data.body || 'みゆぴ、今日の任務は進んでいるかにゃ？',
-    icon: './icon-192.png',
-    badge: './icon-192.png',
+    icon: './01_normal.png?v=20261110',
+    badge: './01_normal.png?v=20261110',
     tag: data.tag || 'neko-kantoku',
     data: {
       url: './'
