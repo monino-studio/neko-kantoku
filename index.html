@@ -406,6 +406,24 @@ const NEKO_SCENES={
   praise_erai:['praise_erai_v6.webp','💖 猫さまの褒め言葉','えらいじゃん？'],
   praise_kiraku:['praise_kiraku_v6.webp','💤 猫さまの褒め言葉','まあ気楽に続けるにゃ']
 };
+/* 褒める猫さまの画像を先読み */
+const praiseImageCache = [];
+
+[
+  'praise_yareba_v6.webp',
+  'praise_taihen_v6.webp',
+  'praise_keizoku_v6.webp',
+  'praise_marvelous_v6.webp',
+  'praise_turtle_v6.webp',
+  'praise_milk_v6.webp',
+  'praise_erai_v6.webp',
+  'praise_kiraku_v6.webp'
+].forEach(filename => {
+  const img = new Image();
+  img.src = 'assets/' + filename;
+  praiseImageCache.push(img);
+});
+
 let nekoSceneOverride='auto';
 let currentPraiseScene = 'praise_yareba';
 function nekoSceneNow(index){
