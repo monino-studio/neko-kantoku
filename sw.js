@@ -1,133 +1,29 @@
-const CACHE = 'neko-palace-v7-5';
-
-const ASSETS = [
-  './',
-  './index.html',
-  './manifest.webmanifest',
-  './normal.png',
-  './annoyed.png',
-  './sad.png',
-  './angry.png',
-  './happy.png',
-  './icon-192.png',
-  './icon-512.png',
-  './icon-180.png',
-  './palace-clean.jpg'
-];
-
-// アプリのインストール
-self.addEventListener('install', event => {
-  event.waitUntil(
-    caches.open(CACHE)
-      .then(async cache => {
-        // 一部の画像がなくてもインストールを続ける
-        await Promise.allSettled(
-          ASSETS.map(file => cache.add(file))
-        );
-      })
-      .then(() => self.skipWaiting())
-  );
-});
-
-// 古いキャッシュを削除
-self.addEventListener('activate', event => {
-  event.waitUntil(
-    caches.keys()
-      .then(keys =>
-        Promise.all(
-          keys
-            .filter(key => key !== CACHE)
-            .map(key => caches.delete(key))
-        )
-      )
-      .then(() => self.clients.claim())
-  );
-});
-
-// ホームページの読み込み
-self.addEventListener('fetch', event => {
-  if (
-    event.request.method !== 'GET' ||
-    new URL(event.request.url).origin !== self.location.origin
-  ) {
-    return;
-  }
-
-  event.respondWith(
-    fetch(event.request)
-      .then(response => {
-        if (response.ok) {
-          const copy = response.clone();
-
-          event.waitUntil(
-            caches.open(CACHE)
-              .then(cache => cache.put(event.request, copy))
-          );
-        }
-
-        return response;
-      })
-      .catch(() => caches.match(event.request))
-  );
-});
-
-// 猫さまのプッシュ通知を受信
+/* 猫さま監督官 Web Push Service Worker */
+self.addEventListener('install', event => { self.skipWaiting(); });
+self.addEventListener('activate', event => { event.waitUntil(self.clients.claim()); });
 self.addEventListener('push', event => {
   let data = {};
-
-  if (event.data) {
-    try {
-      data = event.data.json();
-    } catch (error) {
-      data = {
-        body: event.data.text()
-      };
-    }
-  }
-
-  const title = data.title || '🐈 猫さま監督官';
-
+  try { data = event.data ? event.data.json() : {}; }
+  catch (_) { try { data = {body: event.data.text()}; } catch (_) {} }
+  const title = data.title || '👑 猫さま監督官';
   const options = {
-    body: data.body || 'みゆぴ、今日の任務は進んでいるかにゃ？',
-    icon: './01_normal.png?v=20261110',
-    badge: './01_normal.png?v=20261110',
-    tag: data.tag || 'neko-kantoku',
-    data: {
-      url: './'
-    }
+    body: data.body || data.message || '任務が待っているにゃ！',
+    icon: '/icon-v8-192.png', badge: '/icon-v8-192.png',
+    tag: data.tag || 'neko-reminder', renotify: true,
+    data: {url: (data.url && typeof data.url === 'string') ? data.url : '/'}
   };
-
-  event.waitUntil(
-    self.registration.showNotification(title, options)
-  );
+  event.waitUntil(self.registration.showNotification(title, options));
 });
-
-// 通知をタップしたら猫さま監督官を開く
 self.addEventListener('notificationclick', event => {
   event.notification.close();
-
-  event.waitUntil(
-    (async () => {
-      const appUrl = new URL('./', self.registration.scope).href;
-
-      const windows = await self.clients.matchAll({
-        type: 'window',
-        includeUncontrolled: true
-      });
-
-      for (const windowClient of windows) {
-        if (
-          new URL(windowClient.url).origin ===
-          new URL(appUrl).origin
-        ) {
-          await windowClient.focus();
-          return;
-        }
+  const url = new URL(event.notification.data?.url || '/',self.location.origin).href;
+  event.waitUntil((async () => {
+    const windows = await self.clients.matchAll({type:'window',includeUncontrolled:true});
+    for (const client of windows) {
+      if (client.url.startsWith(self.location.origin) && 'focus' in client) {
+        await client.focus(); return;
       }
-
-      if (self.clients.openWindow) {
-        await self.clients.openWindow(appUrl);
-      }
-    })()
-  );
+    }
+    if (self.clients.openWindow) await self.clients.openWindow(url);
+  })());
 });
