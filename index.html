@@ -563,7 +563,17 @@ $('neko-nickname').value=localStorage.getItem('nekoNickname')||'';
 $('neko-nickname').addEventListener('change',()=>localStorage.setItem('nekoNickname',$('neko-nickname').value.trim().slice(0,16)));
 $('interval').value=localStorage.getItem('nekoInterval')||'1';$('quiet').checked=localStorage.getItem('nekoQuiet')!=='false';$('interval').onchange=()=>{localStorage.setItem('nekoInterval',$('interval').value);lastNotice=Date.now()};$('quiet').onchange=()=>localStorage.setItem('nekoQuiet',String($('quiet').checked));
 function quietNow(){const h=new Date().getHours();return $('quiet').checked&&(h>=22||h<8)}
-function notifyCat(test=false){if(!('Notification'in window)||Notification.permission!=='granted')return false;if(!test&&(quietNow()||!pending().length))return false;const mood=moods[level()];try{const n=new Notification('👑 猫さま監督官',{body:test?'通知テストにゃ！猫さまはここにいるにゃ♡':mood[2],icon:'./icon-v8-192.png',tag:'neko-'+Date.now()+'-'+Math.random()});n.onclick=()=>{window.focus();n.close()};if(!test)autoCount++;return true}catch(e){$('status').textContent='通知エラー：'+e.message;return false}}
+function notifyCat(test=false){if(!('Notification'in window)||Notification.permission!=='granted')return false;if(!test&&(quietNow()||!pending().length))return false;
+const currentLevel = level();
+const notificationLevel =
+  currentLevel === 0 ? 1 :
+  currentLevel === 1 ? 2 :
+  currentLevel === 2 ? 3 :
+  currentLevel === 3 ? 4 :
+  currentLevel;
+
+const mood = moods[notificationLevel];
+try{const n=new Notification('👑 猫さま監督官',{body:test?'通知テストにゃ！猫さまはここにいるにゃ♡':mood[2],icon:'./icon-v8-192.png',tag:'neko-'+Date.now()+'-'+Math.random()});n.onclick=()=>{window.focus();n.close()};if(!test)autoCount++;return true}catch(e){$('status').textContent='通知エラー：'+e.message;return false}}
 // VAPID公開鍵を通知登録用の形式に変換
 function urlBase64ToUint8Array(base64String) {
   const padding = '='.repeat((4 - base64String.length % 4) % 4);
