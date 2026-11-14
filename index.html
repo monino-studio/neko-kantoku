@@ -906,4 +906,44 @@ if ('serviceWorker' in navigator) {
  });
 })();
 </script>
-<script>document.getElementById('neko-demo-scene').addEventListener('change',function(){nekoSceneOverride=this.value;updateMood();});</script></body></html>
+<script>document.getElementById('neko-demo-scene').addEventListener('change',function(){nekoSceneOverride=this.value;updateMood();});</script>
+<!-- 猫さま監督官・本番用UI修正 -->
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+  // ① 演出選択欄を非表示
+  // 猫さまの自動演出はそのまま維持
+  const sceneSettings =
+    document.querySelector('.neko-scene-test');
+
+  if (sceneSettings) {
+    sceneSettings.style.display = 'none';
+  }
+
+  // ② 「1分（テスト用）」を「1分」に変更
+  const oneMinute =
+    document.querySelector('#interval option[value="1"]');
+
+  if (oneMinute) {
+    oneMinute.textContent = '1分';
+  }
+
+  // ③ 上部の歯車ボタンを非表示
+  const settingsButton =
+    document.getElementById('settings-open');
+
+  if (settingsButton) {
+    settingsButton.style.display = 'none';
+  }
+
+  // 下部メニューの設定ボタンも非表示
+  document.querySelectorAll('.bottomnav button')
+    .forEach(button => {
+      if (button.getAttribute('onclick')?.includes('settings-dialog')) {
+        button.style.display = 'none';
+      }
+    });
+
+});
+</script>
+</body></html>
