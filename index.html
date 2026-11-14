@@ -387,7 +387,7 @@ const NEKO_SCENES={
   tea:['tea.webp','🫖 優雅なお茶の時間','紅茶でも飲んで待つにゃ。'],
   book:['book.webp','📖 読書中','知性は大切にゃ。'],
   stretch:['stretch.webp','🐈 のびのび中','背筋を伸ばすにゃ。'],
-  sulk:['sulk.webp','😒 猫さまはご不満です','まだかにゃ……？'],
+  sulk:['sulk.webp','😒 猫さまはご不満です','……まだ終わってないのかにゃ？'],
   bunny:['bunny.webp','🐰 1時間経過','待ちくたびれてしまったにゃ。'],
   chew:['chew.webp','🐰 2時間経過','うさぎに八つ当たりするにゃ……！'],
   bunny3:['bunny3.webp','⚠️ 3時間経過','こうなりたいのかにゃ？'],
@@ -443,7 +443,7 @@ function nekoSceneNow(index){
  if(minutes>=120)return 'chew';
  if(minutes>=60)return 'bunny';
  if(minutes>=20)return 'sulk';
- return minutes>=5?'sulk':'idle';
+ return 'sulk';
 }
 function changeCatImage(index){
  const key=nekoSceneNow(index),src='assets/'+NEKO_SCENES[key][0],cat=$('cat');
